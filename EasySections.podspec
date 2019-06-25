@@ -8,77 +8,82 @@
 
 Pod::Spec.new do |s|
 
-  # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  #
-  #  These will help people to find your library, and whilst it
-  #  can feel like a chore to fill in it's definitely to your advantage. The
-  #  summary should be tweet-length, and the description more in depth.
-  #
-
   s.name         = "EasySections"
-  s.version      = "0.0.1"
+  s.version      = "0.1.0"
   s.summary      = "Easy Sections is a tiny wrapper around UITableView which makes working with reocurring sections easier."
-
-  # This description is used to generate tags and improve search results.
-  #   * Think: What does it do? Why did you write it? What is the focus?
-  #   * Try to keep it short, snappy and to the point.
-  #   * Write the description between the DESC delimiters below.
-  #   * Finally, don't worry about the indent, CocoaPods strips it!
   s.description  = <<-DESC
+Using EasySections, you can declare your table view sections implementing the already familiar UITableViewDelegate and UITableViewDataSource methods. Then you can easily mix these sections in your implementation.
+Here's how that looks like:
+You make a subclass of AbstractSectionDelegate for each section in your table view.
+
+class BlueSectionDelegate: AbstractSectionDelegate {
+
+var array: [Int]
+
+init(_ array: [Int]) {
+self.array = array
+super.init()
+}
+
+override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+return self.array.count
+}
+
+override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+var blueCell = tableView.dequeueReusableCell(withIdentifier: "blueCell")
+if blueCell == nil {
+blueCell = UITableViewCell.init(style: .default, reuseIdentifier: "blueCell")
+}
+blueCell?.backgroundColor = .blue
+blueCell?.textLabel?.text = String(array[indexPath.row])
+return blueCell!
+}
+}
+
+class RedSectionDelegate: AbstractSectionDelegate {
+
+var array: [String]
+
+init(_ array: [String]) {
+self.array = array
+super.init()
+}
+
+override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+return array.count
+}
+
+override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+var redCell = tableView.dequeueReusableCell(withIdentifier: "redCell")
+if redCell == nil {
+redCell = UITableViewCell.init(style: .default, reuseIdentifier: "redCell")
+}
+redCell?.backgroundColor = .red
+redCell?.textLabel?.text = array[indexPath.row]
+return redCell!
+}
+
+func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+return CGFloat((indexPath.row + 1) * 40)
+}
+}
+
+And then in your controller just do:
+redSectionDelegate = RedSectionDelegate.init(["Should", "I", "Stay", "Or", "Should", "I", "go"])
+blueSectionDelegate = BlueSectionDelegate.init([10, 20, 30, 40, 50])
+let delegates: [AbstractSectionDelegate] = [redSectionDelegate, blueSectionDelegate]
+tableViewDelegate = MainTableViewDelegate.init(delegates)
+tableView.delegate = tableViewDelegate
+tableView.dataSource = tableViewDelegate
+tableView.reloadData()
                    DESC
 
   s.homepage     = "https://github.com/AndrejTrajkovski/EasySections"
   # s.screenshots  = "www.example.com/screenshots_1.gif", "www.example.com/screenshots_2.gif"
 
-
-  # ―――  Spec License  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  #
-  #  Licensing your code is important. See http://choosealicense.com for more info.
-  #  CocoaPods will detect a license file if there is a named LICENSE*
-  #  Popular ones are 'MIT', 'BSD' and 'Apache License, Version 2.0'.
-  #
-
-  s.license      = "MIT (example)"
-  # s.license      = { :type => "MIT", :file => "FILE_LICENSE" }
-
-
-  # ――― Author Metadata  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  #
-  #  Specify the authors of the library, with email addresses. Email addresses
-  #  of the authors are extracted from the SCM log. E.g. $ git log. CocoaPods also
-  #  accepts just a name if you'd rather not provide an email address.
-  #
-  #  Specify a social_media_url where others can refer to, for example a twitter
-  #  profile URL.
-  #
-
-  s.author             = { "AndrejTrajkovski" => "andrej.trajkovski@hotmail.com" }
-  # Or just: s.author    = "AndrejTrajkovski"
-  # s.authors            = { "AndrejTrajkovski" => "andrej.trajkovski@hotmail.com" }
-  # s.social_media_url   = "http://twitter.com/AndrejTrajkovski"
-
-  # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  #
-  #  If this Pod runs only on iOS or OS X, then specify the platform and
-  #  the deployment target. You can optionally include the target after the platform.
-  #
-
-  # s.platform     = :ios
-  # s.platform     = :ios, "5.0"
-
-  #  When using multiple platforms
-  # s.ios.deployment_target = "5.0"
-  # s.osx.deployment_target = "10.7"
-  # s.watchos.deployment_target = "2.0"
-  # s.tvos.deployment_target = "9.0"
-
-
-  # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  #
-  #  Specify the location from where the source should be retrieved.
-  #  Supports git, hg, bzr, svn and HTTP.
-  #
-
+  s.license      = { :type => "MIT", :file => "LICENSE" }
+  s.author             = { "AndrejTrajkovski" => "andrej.trajkovski@hotmail.com" }  
+  s.platform     = :ios, "9.0"
   s.source       = { :git => "https://github.com/AndrejTrajkovski/EasySections.git", :tag => "#{s.version}" }
 
 
@@ -89,49 +94,7 @@ Pod::Spec.new do |s|
   #  For header files it will include any header in the folder.
   #  Not including the public_header_files will make all headers public.
   #
-
-  s.source_files  = "Classes", "Classes/**/*.{h,m}"
-  s.exclude_files = "Classes/Exclude"
-
-  # s.public_header_files = "Classes/**/*.h"
+  s.source_files = "EasySections/**/*.{swift}"
   s.swift_version = "5.0"
-
-  # ――― Resources ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  #
-  #  A list of resources included with the Pod. These are copied into the
-  #  target bundle with a build phase script. Anything else will be cleaned.
-  #  You can preserve files from being cleaned, please don't preserve
-  #  non-essential files like tests, examples and documentation.
-  #
-
-  # s.resource  = "icon.png"
-  # s.resources = "Resources/*.png"
-
-  # s.preserve_paths = "FilesToSave", "MoreFilesToSave"
-
-
-  # ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  #
-  #  Link your library with frameworks, or libraries. Libraries do not include
-  #  the lib prefix of their name.
-  #
-
-  # s.framework  = "SomeFramework"
-  # s.frameworks = "SomeFramework", "AnotherFramework"
-
-  # s.library   = "iconv"
-  # s.libraries = "iconv", "xml2"
-
-
-  # ――― Project Settings ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  #
-  #  If your library depends on compiler flags you can set them in the xcconfig hash
-  #  where they will only apply to your library. If you depend on other Podspecs
-  #  you can include multiple dependencies to ensure it works.
-
-  # s.requires_arc = true
-
-  # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
-  # s.dependency "JSONKit", "~> 1.4"
 
 end

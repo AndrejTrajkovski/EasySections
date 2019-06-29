@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "EasySections"
-  s.version      = "0.1.1"
+  s.version      = "0.1.2"
   s.summary      = "Easy Sections is a tiny wrapper around UITableView which makes working with reocurring sections easier."
   s.description  = <<-DESC
 Using EasySections, you can declare your table view sections implementing the already familiar UITableViewDelegate and UITableViewDataSource methods. Then you can easily mix these sections in your implementation.

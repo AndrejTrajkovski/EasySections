@@ -1,0 +1,6 @@
+framework module Pods_EasySections {
+  umbrella header "Pods-EasySections-umbrella.h"
+
+  export *
+  module * { export * }
+}
